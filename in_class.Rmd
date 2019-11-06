@@ -1,0 +1,91 @@
+---
+title: "In Class"
+output: html_document
+---
+
+Repeat start from previous repo to get data: <https://github.com/stoltzmaniac/DSCA-21-Hierarchical-Clustering>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10)
+# install.packages('devtools')
+# devtools::install_github("vqv/ggbiplot") (select option 3 after running)
+library('ggbiplot')
+library('gridExtra')
+library('caret')
+library('tidyverse')
+
+
+data("USArrests")
+dat = USArrests %>%
+  rownames_to_column("State") %>%
+  as_tibble()
+```
+
+
+Show the data
+```{r}
+head(dat)
+```
+
+
+The following demonstrates how to take a `tibble` and convert one of the `columns` to `rownames`.
+```{r}
+dat_prep = dat %>% column_to_rownames("State")
+head(dat_prep)
+```
+
+
+```{r}
+model_pca = princomp(dat_prep)
+summary(model_pca)
+```
+
+
+```{r fig.height=7, fig.width=7}
+ggbiplot(model_pca, labels = rownames(dat_scaled))
+```
+
+
+
+
+```{r}
+dat_scale_func = preProcess(dat_prep, method = c("center", "scale"))
+dat_scaled = predict(dat_scale_func, dat_prep)
+head(dat_scaled)
+```
+
+
+```{r}
+model_pca = princomp(dat_scaled)
+summary(model_pca)
+```
+
+```{r}
+ggbiplot(model_pca, labels = rownames(dat_scaled))
+```
+```{r}
+model_pca$sdev
+```
+
+```{r}
+sdev = model_pca$sdev
+sdev_sq = sdev^2
+
+var_explained = sdev_sq / sum(sdev_sq)
+var_explained
+```
+
+```{r}
+cumulative_var_explained = cumsum(var_explained)
+cumulative_var_explained
+```
+
+```{r fig.width=5, fig.height=3}
+plot(1:length(var_explained), var_explained, type = 'b')
+```
+
+
+```{r fig.width=5, fig.height=3}
+plot(1:length(cumulative_var_explained), cumulative_var_explained, type = 'b')
+```
+
+

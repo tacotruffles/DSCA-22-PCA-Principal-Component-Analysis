@@ -1,0 +1,58 @@
+---
+title: "Assignment"
+output: html_document
+---
+
+Repeat start from previous repo to get data: <https://github.com/stoltzmaniac/DSCA-21-Hierarchical-Clustering>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10)
+# install.packages('devtools')
+# devtools::install_github("vqv/ggbiplot") (select option 3 after running)
+library('ggbiplot')
+library('gridExtra')
+library('caret')
+library('tidyverse')
+
+
+data("USArrests")
+dat = USArrests %>%
+  rownames_to_column("State") %>%
+  as_tibble()
+
+dat_prep = dat %>% column_to_rownames("State")
+head(dat_prep)
+```
+
+
+```{r}
+dat_scale_func = preProcess(dat_prep, method = c("center", "scale"))
+dat_scaled = predict(dat_scale_func, dat_prep)
+head(dat_scaled)
+```
+
+
+```{r}
+model_pca = princomp(dat_scaled)
+summary(model_pca)
+```
+
+```{r}
+ggbiplot(model_pca, labels = rownames(dat_scaled))
+```
+
+I created a new dataset utilizing the principal components. 
+```{r}
+dat = predict(model_pca, dat_scaled)
+head(dat)
+```
+
+
+Use this data ro re-run your hierarchical clustering. For example, instead of the different crime columns, you now have `Comp.1`, `Comp.2` ...
+
+Hint, use `hclust`, `as.dendrogram` .... etc. 
+```{r}
+
+```
+
+
+How do your results differ? Do you think they are better? Should you use all principal components? How would you decide on which ones to use?
