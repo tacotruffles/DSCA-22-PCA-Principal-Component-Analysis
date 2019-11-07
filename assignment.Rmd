@@ -12,6 +12,7 @@ library('ggbiplot')
 library('gridExtra')
 library('caret')
 library('tidyverse')
+library('dendextend')
 
 
 data("USArrests")
@@ -51,8 +52,18 @@ Use this data ro re-run your hierarchical clustering. For example, instead of th
 
 Hint, use `hclust`, `as.dendrogram` .... etc. 
 ```{r}
-
+distance_data = dist(dat, method = 'euclidean')
+hc_complete = hclust(distance_data, method = 'complete')
+plot(hc_complete)
 ```
 
+```{r}
+k_val = 3
+hc_complete_dendro = as.dendrogram(hc_complete)
+dend_colored = hc_complete_dendro %>%
+  color_branches(k = k_val) %>%
+  color_labels(k = k_val)
+plot(dend_colored)
+```
 
 How do your results differ? Do you think they are better? Should you use all principal components? How would you decide on which ones to use?

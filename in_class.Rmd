@@ -41,7 +41,7 @@ summary(model_pca)
 
 
 ```{r fig.height=7, fig.width=7}
-ggbiplot(model_pca, labels = rownames(dat_scaled))
+ggbiplot(model_pca, labels = rownames(dat_prep))
 ```
 
 
